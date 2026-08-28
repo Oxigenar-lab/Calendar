@@ -265,6 +265,78 @@
   }
   .btn-copy:hover{background:var(--teal-dark);}
   .btn-copy.copied{background:var(--gold);}
+
+  .tab-nav{
+    display:flex;
+    gap:4px;
+    margin-bottom:22px;
+    border-bottom:2px solid var(--line);
+  }
+  .tab-btn{
+    font-family:'Inter';
+    font-size:13.5px;
+    font-weight:700;
+    padding:10px 20px;
+    border:none;
+    background:none;
+    color:var(--sage);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    margin-bottom:-2px;
+  }
+  .tab-btn.active{
+    color:var(--teal-dark);
+    border-bottom-color:var(--gold);
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .source-group{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-bottom:14px;
+    padding:16px 20px;
+  }
+  .source-group h3{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    color:var(--teal-dark);
+    margin:0 0 4px;
+  }
+  .source-group .finding{
+    font-size:13px;
+    color:var(--ink);
+    margin-bottom:10px;
+    line-height:1.5;
+  }
+  .source-group ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .source-group li{
+    font-size:12.5px;
+    margin-bottom:5px;
+    line-height:1.4;
+  }
+  .source-group a{
+    color:var(--teal);
+    text-decoration:none;
+  }
+  .source-group a:hover{text-decoration:underline;}
+  .source-tag{
+    display:inline-block;
+    font-size:9.5px;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:1px 6px;
+    border-radius:999px;
+    background:#E3DEC9;
+    color:var(--teal-dark);
+    margin-right:6px;
+  }
+  .source-tag.oficial{background:#D9E6DD;}
+  .source-tag.pendente{background:#F1E1C6;color:var(--danger);}
 </style>
 </head>
 <body>
@@ -281,6 +353,13 @@
       <button onclick="changeMonth(1)">›</button>
     </div>
   </header>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tabBtnCalendario" onclick="switchTab('calendario')">Calendário</button>
+    <button class="tab-btn" id="tabBtnFontes" onclick="switchTab('fontes')">Fontes da pesquisa</button>
+  </div>
+
+  <div class="tab-panel active" id="tabCalendario">
 
   <div class="toggle-bar">
     <input type="checkbox" id="considerFacultativo" onchange="render()">
@@ -306,13 +385,173 @@
     <button class="btn-copy" id="copyBtn" onclick="copyAviso()">Copiar aviso</button>
   </div>
 
+  </div>
+
+  <div class="tab-panel" id="tabFontes">
+    <div class="notice">
+      <b>Como usar esta aba:</b> cada bloco abaixo mostra o que foi confirmado e os links exatos consultados (pesquisa feita em agosto de 2026). Itens com a tag <span class="source-tag pendente">pendente</span> têm fontes divergentes entre si — indicados para confirmação direta com a prefeitura antes de tratar como certeza absoluta.
+    </div>
+
+    <div class="source-group">
+      <h3>Feriados nacionais (2026 e 2027)</h3>
+      <div class="finding">Datas fixas e móveis (Carnaval, Sexta-feira Santa, Corpus Christi) calculadas a partir da Páscoa e conferidas em múltiplas fontes independentes.</div>
+      <ul>
+        <li><a href="https://www.anbima.com.br/feriados/fer_nacionais/2026.asp" target="_blank">ANBIMA — Feriados nacionais 2026</a></li>
+        <li><a href="https://www.anbima.com.br/feriados/fer_nacionais/2027.asp" target="_blank">ANBIMA — Feriados nacionais 2027</a></li>
+        <li><a href="https://www.santander.com.br/blog/feriados-2026" target="_blank">Santander — Feriados 2026</a></li>
+        <li><a href="https://calendario2027brasil.com/" target="_blank">Calendário 2027 Brasil — cálculo da Páscoa/Carnaval/Corpus Christi</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Rio de Janeiro (estado) — Corpus Christi e Carnaval</h3>
+      <div class="finding">Lei estadual 11.002/2025 tornou o Corpus Christi feriado estadual a partir de 2026 (primeiro estado do Brasil a fazer isso). Lei 5.243/2008 já tornava a terça-feira de Carnaval feriado estadual.</div>
+      <ul>
+        <li><a href="https://www.alerj.rj.gov.br/Visualizar/Noticia/80212" target="_blank">ALERJ — aprovação da Lei 11.002/2025 (Corpus Christi)</a></li>
+        <li><a href="https://diariodorio.com/corpus-christi-sera-feriado-no-rio-de-janeiro-em-2026/" target="_blank">Diário do Rio de Janeiro — confirmação para 2026</a></li>
+        <li><a href="https://www.calendarr.com/brasil/feriados-no-rio-de-janeiro/" target="_blank">Calendarr — base legal (Lei 1271/1988 São Sebastião, Lei 5243/2008 Carnaval, Lei 5198/2008 São Jorge)</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Rio de Janeiro (cidade)</h3>
+      <div class="finding">Único feriado municipal: São Sebastião (20/01), padroeiro. Aniversário da cidade (1º de março) <b>não é feriado</b> — falta lei municipal regulamentando.</div>
+      <ul>
+        <li><a href="https://calendario.online/feriados-rio-de-janeiro-rj.html" target="_blank">Calendário Online — confirma que 1º de março não é feriado</a></li>
+        <li><a href="https://www.calendarr.com/brasil/feriados-no-rio-de-janeiro/" target="_blank">Calendarr — Lei 1271/1988 (São Sebastião)</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Niterói</h3>
+      <div class="finding">Dois feriados municipais: São João (24/06, padroeiro) e Aniversário de Niterói (22/11), pela Lei Municipal 2.142/2004.</div>
+      <ul>
+        <li><a href="https://consultaniteroi.siscam.com.br/Download.aspx?id=72043" target="_blank">Câmara de Niterói — texto de lei municipal</a></li>
+        <li><a href="https://www.queroferiado.com.br/feriados/rio-de-janeiro/niteroi" target="_blank">Quero Feriado — Niterói 2026</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Nova Iguaçu</h3>
+      <div class="finding">Feriado municipal: Santo Antônio (13/06), padroeiro do município.</div>
+      <ul>
+        <li><a href="https://www.sis.sindconir.org.br/feriados.php" target="_blank">Sindicato do Comércio de Nova Iguaçu — lista de feriados da região</a></li>
+        <li><a href="https://www.coren-rj.org.br/feriados-municipais-nova-iguacu-e-volta-redonda/" target="_blank">COREN-RJ — confirmação de fechamento em 13/06</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Volta Redonda</h3>
+      <div class="finding">Feriado municipal confirmado: Santo Antônio (13/06), Lei 5.484/2018. O "aniversário da cidade" (17/07) tem fontes divergentes — uma notícia recente (jul/2026) afirma que virou feriado oficial, mas um agregador de calendários afirma que falta lei específica. <span class="source-tag pendente">pendente</span> — recomendo confirmar direto com a Prefeitura de Volta Redonda ou o Sicomércio-VR antes de tratar 17/07 como feriado certo.</div>
+      <ul>
+        <li><a href="https://sapl.voltaredonda.rj.leg.br/norma/4025" target="_blank">Câmara de Volta Redonda — Lei 5.484/2018 (Santo Antônio)</a></li>
+        <li><a href="https://fatopaulista.com.br/feriado-volta-redonda-17-julho/" target="_blank">Notícia (jul/2026) — afirma que 17/07 é feriado oficial</a></li>
+        <li><a href="https://calendario.online/feriados-volta-redonda-rj.html" target="_blank">Calendário Online — afirma que 17/07 NÃO é feriado (sem lei)</a></li>
+        <li><a href="https://www.sicomerciovr.com.br/feriados/" target="_blank">Sicomércio-VR — calendário oficial do comércio local</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>São Paulo (estado e cidade)</h3>
+      <div class="finding">Estadual: 9 de julho, Revolução Constitucionalista de 1932 (Lei Estadual 9.497/1997). Municipal: 25 de janeiro, aniversário da cidade. Corpus Christi é feriado municipal por lei própria da capital paulista.</div>
+      <ul>
+        <li><a href="https://www.al.sp.gov.br/documentacao/estudos-e-manuais/feriado-9-julho/" target="_blank">Assembleia Legislativa de SP — Lei 9.497/1997</a></li>
+        <li><a href="https://www.cnnbrasil.com.br/nacional/sudeste/sp/por-que-9-de-julho-e-feriado-em-sp-entenda-data-comemorativa/" target="_blank">CNN Brasil — contexto histórico e legal</a></li>
+        <li><a href="https://www.nsctotal.com.br/cotidiano/quando-cai-corpus-christi-em-2027-feriado" target="_blank">NSC Total — confirma lei municipal de Corpus Christi em São Paulo capital</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Guarulhos</h3>
+      <div class="finding">Feriado municipal: 8 de dezembro — coincide o aniversário da cidade com o Dia de Nossa Senhora da Imaculada Conceição.</div>
+      <ul>
+        <li><a href="https://online.crcsp.org.br/portal/noticias/noticia.asp?c=10323" target="_blank">CRCSP (fonte: Folha de S.Paulo) — calendário de feriados municipais SP 2026</a></li>
+        <li><a href="https://istoedinheiro.com.br/por-que-8-de-dezembro-e-feriado-em-parte-do-brasil" target="_blank">IstoÉ Dinheiro — lista de capitais/cidades com feriado em 8/12</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Osasco</h3>
+      <div class="finding">Dois feriados municipais: Emancipação de Osasco (19/02) e Santo Antônio, padroeiro (13/06).</div>
+      <ul>
+        <li><a href="https://online.crcsp.org.br/portal/noticias/noticia.asp?c=10323" target="_blank">CRCSP (fonte: Folha de S.Paulo) — calendário de feriados municipais SP 2026</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>São Caetano do Sul</h3>
+      <div class="finding">Feriado municipal: aniversário da cidade em 28 de julho.</div>
+      <ul>
+        <li><a href="https://www.saocaetanodosul.sp.gov.br/feriados/5" target="_blank">Prefeitura de São Caetano do Sul — página oficial de decretos de feriados</a></li>
+        <li><a href="https://www.iferiados.com.br/feriados/2026/regionais/sp/sao-caetano-do-sul" target="_blank">iFeriados — calendário 2026</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Minas Gerais (estado) e Belo Horizonte</h3>
+      <div class="finding">MG não tem feriado estadual extra (Tiradentes já é a Data Magna). Belo Horizonte tem dois feriados municipais: Assunção de Nossa Senhora (15/08) e Imaculada Conceição (08/12), pela Lei Municipal 1.327/1967 — além de Corpus Christi por legislação municipal própria. <b>O aniversário da cidade (12/12) não é feriado</b> — foi intencionalmente mantido como dia útil desde 1967 para não ter duas folgas próximas ao dia 8.</div>
+      <ul>
+        <li><a href="https://www.agenciaminas.mg.gov.br/noticia/governo-de-minas-publica-calendario-de-feriados-e-pontos-facultativos-para-reparticoes-publicas-estaduais-em-2026" target="_blank">Agência Minas Gerais — calendário oficial 2026</a></li>
+        <li><a href="https://blog.feriados.com.br/belo-horizonte-decreto-dos-feriados-municipais/" target="_blank">Feriados.com.br — Lei Municipal 1.327/1967</a></li>
+        <li><a href="https://www.buritisjuntos.com.br/dicas-e-noticias/belo-horizonte/lazer/feriado-em-bh" target="_blank">Buritis Juntos — explica por que 12/12 não é feriado</a></li>
+        <li><a href="https://moonbh.com.br/bh-news/2026/05/26/belo-horizonte-calendario-feriados-2026/" target="_blank">Moon BH — confirma Corpus Christi como feriado municipal em BH</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Juiz de Fora</h3>
+      <div class="finding">Feriado municipal: Santo Antônio (13/06), padroeiro. O aniversário da cidade (31/05) <b>não é feriado</b>.</div>
+      <ul>
+        <li><a href="https://calendario.online/feriados-juiz-de-fora-mg.html" target="_blank">Calendário Online — confirma que 31/05 não é feriado</a></li>
+        <li><a href="https://feriados.site/mg/juiz-de-fora/" target="_blank">Feriados.site — calendário detalhado 2026</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Rio Grande do Sul (estado) e Porto Alegre</h3>
+      <div class="finding">Estadual: 20 de setembro, Data Magna / Dia do Gaúcho (Lei 2.072/1953). Municipal Porto Alegre: N. Sra. dos Navegantes e Iemanjá (02/02) e Corpus Christi — ambos confirmados pelo decreto estadual anual. <b>O aniversário de Porto Alegre não é feriado</b> (confirmado pela própria Prefeitura).</div>
+      <ul>
+        <li><a href="https://www.diariooficial.rs.gov.br/materia?id=939277" target="_blank">Diário Oficial do RS — decreto estadual com feriados municipais de Porto Alegre</a></li>
+        <li><a href="https://prefeitura.poa.br/gcs/noticias/aniversario-de-porto-alegre-nao-e-feriado-municipal" target="_blank">Prefeitura de Porto Alegre — nota oficial "aniversário não é feriado"</a></li>
+        <li><a href="https://leisestaduais.com.br/rs/lei-ordinaria-n-2072-1953-rio-grande-do-sul-declara-feriado-estadual-o-dia-20-de-setembro" target="_blank">Lei Estadual 2.072/1953 (Dia do Gaúcho)</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Paraná (estado) e Curitiba</h3>
+      <div class="finding">PR não tem feriado civil estadual — a Lei 4.658/1962 (19/12) foi revogada em 2014, virando só ponto facultativo do serviço público, sem efeito no setor privado. Curitiba tem um feriado municipal: Nossa Senhora da Luz dos Pinhais, padroeira (08/09) — o aniversário da cidade (29/03) <b>não é feriado</b>.</div>
+      <ul>
+        <li><a href="https://www.assembleia.pr.leg.br/comunicacao/noticias/atualizando-projeto-que-define-que-o-dia-19-de-dezembro-nao-e-feriado-civil-ja-foi-convertido-em-lei" target="_blank">Assembleia Legislativa do PR — revogação do feriado de 19/12</a></li>
+        <li><a href="https://www.gazetadopovo.com.br/parana/aniversario-de-curitiba-nao-e-feriado-cidade-nao-e-unica-a-ignorar-data-de-fundacao/" target="_blank">Gazeta do Povo — por que o aniversário de Curitiba não é feriado</a></li>
+        <li><a href="https://diariodefoz.com/porque-o-aniversario-nao-e-feriado-em-curitiba/" target="_blank">Diário de Foz — base legal dos 4 feriados de Curitiba (padroeira, Corpus Christi, Sexta-feira Santa)</a></li>
+      </ul>
+    </div>
+
+    <div class="source-group">
+      <h3><span class="source-tag oficial">oficial</span>Bahia (estado) e Salvador</h3>
+      <div class="finding">Estadual: 2 de julho, Independência da Bahia (Lei Federal 9.093/1995, que autoriza cada estado a fixar sua Data Magna). Municipal Salvador: São João (24/06) e N. Sra. da Conceição da Praia (08/12), padroeira, pela Lei Municipal 1.997/1967 — que também inclui Corpus Christi.</div>
+      <ul>
+        <li><a href="https://www.contabeis.com.br/forum/departamento-pessoal-e-rh/74824/feriado-de-2-de-julho-bahia/" target="_blank">Fórum Contábeis — base legal completa (nacional/estadual/municipal Salvador)</a></li>
+        <li><a href="https://feriados.site/ba/salvador/" target="_blank">Feriados.site — calendário detalhado com Lei Municipal 1.997/1967</a></li>
+        <li><a href="https://www.prefeituradesalvador.org/feriados-em-salvador-ba-2026-veja-data-e-dia-da-semana-de-todos/" target="_blank">Prefeitura de Salvador — calendário 2026</a></li>
+      </ul>
+    </div>
+
+  </div>
+
   <footer>
     Sábado conta como dia útil · Domingos não contam · Feriados obrigatórios não contam<br>
-    Fontes: leis municipais/estaduais e Diários Oficiais consultados em agosto de 2026
+    Pesquisa realizada em agosto de 2026 — consulte a aba "Fontes da pesquisa" para todos os links
   </footer>
 </div>
 
 <script>
+function switchTab(tab){
+  document.getElementById('tabCalendario').classList.toggle('active', tab==='calendario');
+  document.getElementById('tabFontes').classList.toggle('active', tab==='fontes');
+  document.getElementById('tabBtnCalendario').classList.toggle('active', tab==='calendario');
+  document.getElementById('tabBtnFontes').classList.toggle('active', tab==='fontes');
+}
 const MONTH_NAMES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 
 let state = { currentYear: 2026, currentMonth: 7 };
