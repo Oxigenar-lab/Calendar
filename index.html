@@ -197,6 +197,74 @@
     margin-top:32px;
     line-height:1.6;
   }
+
+  .aviso-section{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-top:28px;
+  }
+  .aviso-section h2{
+    font-family:'Fraunces',serif;
+    font-size:19px;
+    color:var(--teal-dark);
+    margin:0 0 4px;
+  }
+  .aviso-section .sub{
+    font-size:12.5px;
+    color:var(--sage);
+    margin-bottom:14px;
+  }
+  .aviso-controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+    align-items:center;
+  }
+  .aviso-controls label{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--teal-dark);
+  }
+  .aviso-controls input[type="text"]{
+    font-family:'Inter';
+    font-size:13px;
+    padding:7px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    flex:1;
+    min-width:160px;
+  }
+  #avisoText{
+    width:100%;
+    min-height:260px;
+    font-family:'Inter',monospace;
+    font-size:13.5px;
+    line-height:1.55;
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#FCFBF8;
+    color:var(--ink);
+    resize:vertical;
+    white-space:pre-wrap;
+  }
+  .btn-copy{
+    margin-top:10px;
+    font-family:'Inter';
+    font-size:13px;
+    font-weight:700;
+    padding:10px 20px;
+    border-radius:999px;
+    border:none;
+    background:var(--teal);
+    color:#fff;
+    cursor:pointer;
+  }
+  .btn-copy:hover{background:var(--teal-dark);}
+  .btn-copy.copied{background:var(--gold);}
 </style>
 </head>
 <body>
@@ -225,6 +293,18 @@
   </div>
 
   <div id="citiesContainer"></div>
+
+  <div class="aviso-section">
+    <h2>Aviso para WhatsApp</h2>
+    <div class="sub">Gerado automaticamente a partir do mês selecionado acima. Edite o texto à vontade antes de copiar.</div>
+    <div class="aviso-controls">
+      <label>Prazo de envio (texto livre):</label>
+      <input type="text" id="prazoInput" value="até segunda-feira pela manhã (31/08)" oninput="render()">
+    </div>
+    <textarea id="avisoText" readonly></textarea>
+    <br>
+    <button class="btn-copy" id="copyBtn" onclick="copyAviso()">Copiar aviso</button>
+  </div>
 
   <footer>
     Sábado conta como dia útil · Domingos não contam · Feriados obrigatórios não contam<br>
@@ -271,6 +351,7 @@ const CITY_CONFIG = {
   "Rio de Janeiro":      { uf:"RJ", state:"RJ", fixed:[[1,20,"São Sebastião, padroeiro (municipal)"]] },
   "Niterói":             { uf:"RJ", state:"RJ", fixed:[[6,24,"São João, padroeiro (municipal)"],[11,22,"Aniversário de Niterói (municipal)"]] },
   "Nova Iguaçu":         { uf:"RJ", state:"RJ", fixed:[[6,13,"Santo Antônio, padroeiro (municipal)"]] },
+  "Volta Redonda":       { uf:"RJ", state:"RJ", fixed:[[6,13,"Santo Antônio, padroeiro (municipal)"]], unconfirmed:[[7,17,"Aniversário de Volta Redonda — fontes divergem se é feriado oficial; confirmar com a prefeitura"]] },
   "São Paulo":           { uf:"SP", state:"SP", fixed:[[1,25,"Aniversário de São Paulo (municipal)"]], corpusChristiObrigatorio:true },
   "Guarulhos":           { uf:"SP", state:"SP", fixed:[[12,8,"Aniversário de Guarulhos / N. Sra. da Conceição (municipal)"]] },
   "Osasco":              { uf:"SP", state:"SP", fixed:[[2,19,"Emancipação de Osasco (municipal)"],[6,13,"Santo Antônio, padroeiro (municipal)"]] },
@@ -306,6 +387,7 @@ function buildHolidaysForCity(cityName, year){
 
   stateCfg.fixed.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"estadual", obrigatorio:true}));
   cfg.fixed.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"municipal", obrigatorio:true}));
+  if (cfg.unconfirmed) cfg.unconfirmed.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"facultativo", obrigatorio:false}));
 
   return list.sort((a,b)=>a.date.localeCompare(b.date));
 }
@@ -392,6 +474,111 @@ function render(){
       <div class="city-body">${rowsHtml}</div>
     `;
     container.appendChild(card);
+  });
+
+  generateAviso(considerFacultativo);
+}
+
+const STATE_ORDER = ["PR","RS","BA","MG","RJ","SP"];
+const CITY_DISPLAY_OVERRIDE = { "Rio de Janeiro": "Cidade RJ", "São Paulo": "Cidade SP" };
+
+function cityLabel(name){ return CITY_DISPLAY_OVERRIDE[name] || name; }
+
+function joinPortuguese(items){
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0];
+  return items.slice(0,-1).join(", ") + " e " + items[items.length-1];
+}
+
+function generateAviso(considerFacultativo){
+  const year = state.currentYear, month = state.currentMonth;
+  const monthNameUpper = MONTH_NAMES[month].toUpperCase();
+  const prazo = document.getElementById('prazoInput').value;
+
+  const nationalThisMonth = [];
+  NATIONAL_FIXED.forEach(md => {
+    if (md[0] === month+1) nationalThisMonth.push({date: fixedToDate(year, md), name: md[2]});
+  });
+  const mv = MOVABLE[year];
+  if (parseInt(mv.sextaSanta.split('-')[1],10) === month+1) nationalThisMonth.push({date: mv.sextaSanta, name:"Sexta-feira Santa"});
+  nationalThisMonth.sort((a,b)=>a.date.localeCompare(b.date));
+
+  let lines = [];
+  lines.push("⚠️ AVISO! ⚠️");
+  if (nationalThisMonth.length){
+    const parts = nationalThisMonth.map(h => `${h.date.split('-')[2]}/${h.date.split('-')[1]} - ${h.name}`);
+    lines.push(`Feriados nacionais em ${MONTH_NAMES[month].toLowerCase()}: ${parts.join(", ")}`);
+  } else {
+    lines.push(`Não há feriados nacionais em ${MONTH_NAMES[month].toLowerCase()}.`);
+  }
+
+  const citiesByState = {};
+  Object.keys(CITY_CONFIG).forEach(cityName => {
+    const uf = CITY_CONFIG[cityName].uf;
+    if (!citiesByState[uf]) citiesByState[uf] = [];
+    citiesByState[uf].push(cityName);
+  });
+
+  STATE_ORDER.forEach(uf => {
+    const cities = citiesByState[uf];
+    if (!cities) return;
+
+    const perCity = cities.map(cityName => {
+      const allH = buildHolidaysForCity(cityName, year);
+      const monthH = allH.filter(h => {
+        const [y,m] = h.date.split('-');
+        return parseInt(y,10)===year && parseInt(m,10)===month+1;
+      });
+      const obligDates = new Set(monthH.filter(h => h.obrigatorio || (considerFacultativo && h.type==="facultativo")).map(h=>h.date));
+      const businessDays = computeBusinessDays(year, month, obligDates);
+      const extras = monthH.filter(h => (h.type==="estadual" || h.type==="municipal"));
+      return { cityName, businessDays, extras };
+    });
+
+    const groups = {};
+    perCity.forEach(c => {
+      if (!groups[c.businessDays]) groups[c.businessDays] = [];
+      groups[c.businessDays].push(c);
+    });
+
+    Object.keys(groups).sort((a,b)=>b-a).forEach(bd => {
+      const group = groups[bd];
+      const cityNames = group.map(c => cityLabel(c.cityName));
+      const suffix = cities.length > 1 ? ` (Inclui ${joinPortuguese(cityNames)})` : "";
+      lines.push(`➖ Estado ${uf} - no mês de ${monthNameUpper} teremos ${bd} dias úteis.${suffix}`);
+
+      const seenNotes = new Set();
+      group.forEach(c => {
+        c.extras.forEach(h => {
+          const key = h.date+h.name;
+          if (seenNotes.has(key)) return;
+          seenNotes.add(key);
+          const dateDisplay = `${h.date.split('-')[2]}/${h.date.split('-')[1]}`;
+          const label = h.type === "estadual" ? "Feriado Estadual" : "Feriado Municipal";
+          const cleanName = h.name.replace(/\s*—.*$/,"").replace(/\s*\((municipal|estadual)\)/gi,"");
+          const cityNote = cities.length > 1 ? ` — ${cityLabel(c.cityName)}` : "";
+          lines.push(`${label} - ${cleanName} (${dateDisplay})${cityNote}`);
+        });
+      });
+    });
+  });
+
+  lines.push(`Peço que enviem o recibo de VT, e VR (VR apenas para quem ainda não tem Sodexo) assinado no meu privado ${prazo} ✅`);
+  lines.push(`Conto com o apoio do de todos.`);
+
+  document.getElementById('avisoText').value = lines.join("\n");
+}
+
+function copyAviso(){
+  const textarea = document.getElementById('avisoText');
+  textarea.select();
+  navigator.clipboard.writeText(textarea.value).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = "Copiado ✓";
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = "Copiar aviso"; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    document.execCommand('copy');
   });
 }
 
