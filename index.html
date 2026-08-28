@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calendário de Feriados por Loja — 2026/2027</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink: #1B2420;
+    --paper: #F6F3EC;
+    --panel: #FFFFFF;
+    --teal: #1F4A44;
+    --teal-dark: #14332F;
+    --gold: #B8863B;
+    --sage: #7E9182;
+    --line: #DCD6C8;
+    --danger: #A6432F;
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    border-bottom:2px solid var(--teal);
+    padding-bottom:18px;
+    margin-bottom:20px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--sage);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:30px;
+    margin:0;
+    color:var(--teal-dark);
+    line-height:1.1;
+  }
+  .month-nav{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 6px 6px 16px;
+  }
+  .month-nav button{
+    border:none;
+    background:var(--teal);
+    color:#fff;
+    width:30px;height:30px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+  }
+  .month-nav button:hover{background:var(--teal-dark);}
+  .month-label{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:16px;
+    min-width:150px;
+    text-align:center;
+  }
+
+  .toggle-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:12px 16px;
+    margin-bottom:20px;
+    font-size:13px;
+    flex-wrap:wrap;
+  }
+  .toggle-bar input{width:16px;height:16px;}
+  .toggle-bar label{cursor:pointer;}
+  .toggle-bar .hint{color:var(--sage);font-size:12px;}
+
+  .notice{
+    background:#FBF3E3;
+    border:1px solid #E9D6A8;
+    border-radius:var(--radius);
+    padding:14px 18px;
+    font-size:13px;
+    color:#6b5220;
+    margin-bottom:20px;
+    line-height:1.55;
+  }
+  .notice b{color:var(--gold);}
+
+  .city-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .city-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 20px;
+    background:linear-gradient(90deg, var(--teal) 0%, var(--teal-dark) 100%);
+    color:#fff;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .city-name{
+    font-family:'Fraunces',serif;
+    font-size:18px;
+    font-weight:600;
+  }
+  .city-name .uf{
+    font-family:'Inter';
+    font-size:12px;
+    font-weight:500;
+    opacity:.75;
+    margin-left:6px;
+  }
+  .stats{display:flex;gap:20px;}
+  .stat{text-align:right;}
+  .stat .num{
+    font-family:'Fraunces',serif;
+    font-size:21px;
+    font-weight:700;
+    display:block;
+    line-height:1.1;
+  }
+  .stat .lbl{
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    opacity:.85;
+  }
+  .stat.highlight .num{color:var(--gold);}
+
+  .city-body{padding:12px 20px 16px;}
+  .holiday-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13.5px;
+  }
+  .holiday-row:last-child{border-bottom:none;}
+  .holiday-row.facultativo{opacity:.62;}
+  .hdate{
+    font-weight:700;
+    min-width:88px;
+    color:var(--teal-dark);
+  }
+  .htag{
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    padding:2px 7px;
+    border-radius:999px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .htag.nacional{background:#E3DEC9;color:var(--teal-dark);}
+  .htag.estadual{background:#D9E6DD;color:var(--teal-dark);}
+  .htag.municipal{background:#F1E1C6;color:var(--gold);}
+  .htag.facultativo{background:#eee;color:#888;}
+  .hname{flex:1;}
+  .empty-holidays{
+    font-size:13px;color:var(--sage);font-style:italic;padding:6px 0;
+  }
+
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--sage);
+    margin-top:32px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Vale-transporte · controle mensal · dados reais 2026/2027</div>
+      <h1>Feriados por Loja</h1>
+    </div>
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)">‹</button>
+      <div class="month-label" id="monthLabel">—</div>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+  </header>
+
+  <div class="toggle-bar">
+    <input type="checkbox" id="considerFacultativo" onchange="render()">
+    <label for="considerFacultativo">Considerar Carnaval e Corpus Christi (quando "ponto facultativo") como feriado pago</label>
+    <span class="hint">Nas cidades sem lei própria, isso é decisão da empresa</span>
+  </div>
+
+  <div class="notice">
+    <b>Cobertura:</b> 2026 e 2027, feriados nacionais + estaduais + municipais pesquisados oficialmente para as 12 cidades. Itens marcados <b>"facultativo"</b> não são obrigatórios para o setor privado — contam ou não a critério da empresa (use o botão acima). A partir de 2028, ou se alguma prefeitura decretar algo novo, me avise para eu atualizar este arquivo.
+  </div>
+
+  <div id="citiesContainer"></div>
+
+  <footer>
+    Sábado conta como dia útil · Domingos não contam · Feriados obrigatórios não contam<br>
+    Fontes: leis municipais/estaduais e Diários Oficiais consultados em agosto de 2026
+  </footer>
+</div>
+
+<script>
+const MONTH_NAMES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+let state = { currentYear: 2026, currentMonth: 7 };
+
+const NATIONAL_FIXED = [
+  [1,1,"Confraternização Universal"],
+  [4,21,"Tiradentes"],
+  [5,1,"Dia do Trabalho"],
+  [9,7,"Independência do Brasil"],
+  [10,12,"Nossa Senhora Aparecida"],
+  [11,2,"Finados"],
+  [11,15,"Proclamação da República"],
+  [11,20,"Consciência Negra"],
+  [12,25,"Natal"]
+];
+
+const MOVABLE = {
+  2026: { sextaSanta:"2026-04-03", carnavalSeg:"2026-02-16", carnavalTer:"2026-02-17", corpusChristi:"2026-06-04" },
+  2027: { sextaSanta:"2027-03-26", carnavalSeg:"2027-02-08", carnavalTer:"2027-02-09", corpusChristi:"2027-05-27" }
+};
+
+const STATE_CONFIG = {
+  RJ: {
+    fixed: [[4,23,"Dia de São Jorge (estadual)"]],
+    carnavalTerObrigatorio: true,
+    corpusChristiObrigatorio: true
+  },
+  SP: { fixed: [[7,9,"Revolução Constitucionalista de 1932 (estadual)"]] },
+  MG: { fixed: [] },
+  RS: { fixed: [[9,20,"Data Magna do RS / Dia do Gaúcho (estadual)"]] },
+  PR: { fixed: [] },
+  BA: { fixed: [[7,2,"Independência da Bahia (estadual)"]] }
+};
+
+const CITY_CONFIG = {
+  "Rio de Janeiro":      { uf:"RJ", state:"RJ", fixed:[[1,20,"São Sebastião, padroeiro (municipal)"]] },
+  "Niterói":             { uf:"RJ", state:"RJ", fixed:[[6,24,"São João, padroeiro (municipal)"],[11,22,"Aniversário de Niterói (municipal)"]] },
+  "Nova Iguaçu":         { uf:"RJ", state:"RJ", fixed:[[6,13,"Santo Antônio, padroeiro (municipal)"]] },
+  "São Paulo":           { uf:"SP", state:"SP", fixed:[[1,25,"Aniversário de São Paulo (municipal)"]], corpusChristiObrigatorio:true },
+  "Guarulhos":           { uf:"SP", state:"SP", fixed:[[12,8,"Aniversário de Guarulhos / N. Sra. da Conceição (municipal)"]] },
+  "Osasco":              { uf:"SP", state:"SP", fixed:[[2,19,"Emancipação de Osasco (municipal)"],[6,13,"Santo Antônio, padroeiro (municipal)"]] },
+  "São Caetano do Sul":  { uf:"SP", state:"SP", fixed:[[7,28,"Aniversário de São Caetano do Sul (municipal)"]] },
+  "Belo Horizonte":      { uf:"MG", state:"MG", fixed:[[8,15,"Assunção de Nossa Senhora (municipal)"],[12,8,"Imaculada Conceição (municipal)"]], corpusChristiObrigatorio:true },
+  "Juiz de Fora":        { uf:"MG", state:"MG", fixed:[[6,13,"Santo Antônio, padroeiro (municipal)"]] },
+  "Porto Alegre":        { uf:"RS", state:"RS", fixed:[[2,2,"N. Sra. dos Navegantes / Iemanjá (municipal)"]], corpusChristiObrigatorio:true },
+  "Curitiba":            { uf:"PR", state:"PR", fixed:[[9,8,"N. Sra. da Luz dos Pinhais, padroeira (municipal)"]], corpusChristiObrigatorio:true },
+  "Salvador":            { uf:"BA", state:"BA", fixed:[[6,24,"São João (municipal)"],[12,8,"N. Sra. da Conceição da Praia, padroeira (municipal)"]], corpusChristiObrigatorio:true }
+};
+
+function pad(n){ return n.toString().padStart(2,'0'); }
+function fixedToDate(year, monthDay){ return `${year}-${pad(monthDay[0])}-${pad(monthDay[1])}`; }
+
+function buildHolidaysForCity(cityName, year){
+  const cfg = CITY_CONFIG[cityName];
+  const stateCfg = STATE_CONFIG[cfg.state];
+  const mv = MOVABLE[year];
+  let list = [];
+
+  NATIONAL_FIXED.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"nacional", obrigatorio:true}));
+  list.push({date: mv.sextaSanta, name:"Sexta-feira Santa", type:"nacional", obrigatorio:true});
+
+  const carnavalTerObrig = !!stateCfg.carnavalTerObrigatorio;
+  list.push({date: mv.carnavalSeg, name:"Carnaval (segunda-feira)", type:"facultativo", obrigatorio:false});
+  list.push({date: mv.carnavalTer, name:"Carnaval (terça-feira)"+(carnavalTerObrig?" — feriado estadual no RJ":""), type: carnavalTerObrig ? "estadual" : "facultativo", obrigatorio: carnavalTerObrig});
+
+  const ccObrig = !!stateCfg.corpusChristiObrigatorio || !!cfg.corpusChristiObrigatorio;
+  let ccLabel = "Corpus Christi";
+  if (stateCfg.corpusChristiObrigatorio) ccLabel += " — feriado estadual no RJ";
+  else if (cfg.corpusChristiObrigatorio) ccLabel += " — feriado municipal";
+  list.push({date: mv.corpusChristi, name: ccLabel, type: ccObrig ? (stateCfg.corpusChristiObrigatorio ? "estadual":"municipal") : "facultativo", obrigatorio: ccObrig});
+
+  stateCfg.fixed.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"estadual", obrigatorio:true}));
+  cfg.fixed.forEach(md => list.push({date: fixedToDate(year, md), name: md[2], type:"municipal", obrigatorio:true}));
+
+  return list.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+function daysInMonth(year, month){ return new Date(year, month+1, 0).getDate(); }
+
+function computeBusinessDays(year, month, obligDatesSet){
+  const total = daysInMonth(year, month);
+  let count = 0;
+  for(let d=1; d<=total; d++){
+    const dt = new Date(year, month, d);
+    const dow = dt.getDay();
+    const iso = `${year}-${pad(month+1)}-${pad(d)}`;
+    if(dow === 0) continue;
+    if(obligDatesSet.has(iso)) continue;
+    count++;
+  }
+  return count;
+}
+
+function changeMonth(delta){
+  state.currentMonth += delta;
+  if(state.currentMonth < 0){ state.currentMonth = 11; state.currentYear--; }
+  if(state.currentMonth > 11){ state.currentMonth = 0; state.currentYear++; }
+  if(state.currentYear < 2026) { state.currentYear = 2026; state.currentMonth = 0; }
+  if(state.currentYear > 2027) { state.currentYear = 2027; state.currentMonth = 11; }
+  render();
+}
+
+function render(){
+  document.getElementById('monthLabel').textContent = `${MONTH_NAMES[state.currentMonth]} ${state.currentYear}`;
+  const considerFacultativo = document.getElementById('considerFacultativo').checked;
+  const container = document.getElementById('citiesContainer');
+  container.innerHTML = '';
+
+  Object.keys(CITY_CONFIG).forEach(cityName => {
+    const cfg = CITY_CONFIG[cityName];
+    const allHolidays = buildHolidaysForCity(cityName, state.currentYear);
+    const monthHolidays = allHolidays.filter(h => {
+      const [y,m] = h.date.split('-');
+      return parseInt(y,10) === state.currentYear && parseInt(m,10) === state.currentMonth+1;
+    });
+
+    const obligDates = new Set(
+      monthHolidays.filter(h => h.obrigatorio || (considerFacultativo && h.type==="facultativo")).map(h=>h.date)
+    );
+    const businessDays = computeBusinessDays(state.currentYear, state.currentMonth, obligDates);
+    const totalDays = daysInMonth(state.currentYear, state.currentMonth);
+    const countedHolidays = monthHolidays.filter(h => h.obrigatorio || (considerFacultativo && h.type==="facultativo"));
+
+    const card = document.createElement('div');
+    card.className = 'city-card';
+
+    const rowsHtml = monthHolidays.length
+      ? monthHolidays.map(h => {
+          const counted = h.obrigatorio || (considerFacultativo && h.type==="facultativo");
+          const dateDisplay = h.date.split('-').reverse().slice(0,2).join('/');
+          return `<div class="holiday-row ${counted?'':'facultativo'}">
+            <span class="hdate">${dateDisplay}</span>
+            <span class="htag ${h.type}">${h.type}</span>
+            <span class="hname">${h.name}</span>
+          </div>`;
+        }).join('')
+      : `<div class="empty-holidays">Nenhum feriado neste mês.</div>`;
+
+    card.innerHTML = `
+      <div class="city-head">
+        <div class="city-name">${cityName}<span class="uf">${cfg.uf}</span></div>
+        <div class="stats">
+          <div class="stat highlight">
+            <span class="num">${businessDays}</span>
+            <span class="lbl">dias úteis</span>
+          </div>
+          <div class="stat">
+            <span class="num">${countedHolidays.length}</span>
+            <span class="lbl">feriados pagos</span>
+          </div>
+          <div class="stat">
+            <span class="num">${totalDays}</span>
+            <span class="lbl">dias no mês</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-body">${rowsHtml}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
