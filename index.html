@@ -169,8 +169,25 @@
   .holiday-row.facultativo{opacity:.62;}
   .hdate{
     font-weight:700;
-    min-width:88px;
+    min-width:120px;
     color:var(--teal-dark);
+  }
+  .hdate .dow{
+    font-weight:500;
+    font-size:11px;
+    text-transform:capitalize;
+    color:var(--sage);
+    margin-left:4px;
+  }
+  .hdate .dow.sunday{
+    color:var(--danger);
+    font-weight:700;
+  }
+  .sunday-note{
+    font-size:10.5px;
+    color:var(--danger);
+    font-style:italic;
+    margin-left:6px;
   }
   .htag{
     font-size:9.5px;
@@ -602,8 +619,14 @@ const CITY_CONFIG = {
   "Salvador":            { uf:"BA", state:"BA", fixed:[[6,24,"São João (municipal)"],[12,8,"N. Sra. da Conceição da Praia, padroeira (municipal)"]], corpusChristiObrigatorio:true }
 };
 
+const DOW_NAMES = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+
 function pad(n){ return n.toString().padStart(2,'0'); }
 function fixedToDate(year, monthDay){ return `${year}-${pad(monthDay[0])}-${pad(monthDay[1])}`; }
+function dowOf(isoDate){
+  const [y,m,d] = isoDate.split('-').map(Number);
+  return new Date(y, m-1, d).getDay();
+}
 
 function buildHolidaysForCity(cityName, year){
   const cfg = CITY_CONFIG[cityName];
@@ -684,10 +707,13 @@ function render(){
       ? monthHolidays.map(h => {
           const counted = h.obrigatorio || (considerFacultativo && h.type==="facultativo");
           const dateDisplay = h.date.split('-').reverse().slice(0,2).join('/');
+          const dow = dowOf(h.date);
+          const dowName = DOW_NAMES[dow];
+          const isSunday = dow === 0;
           return `<div class="holiday-row ${counted?'':'facultativo'}">
-            <span class="hdate">${dateDisplay}</span>
+            <span class="hdate">${dateDisplay}<span class="dow ${isSunday?'sunday':''}">${dowName}</span></span>
             <span class="htag ${h.type}">${h.type}</span>
-            <span class="hname">${h.name}</span>
+            <span class="hname">${h.name}${isSunday?'<span class="sunday-note">— cai no domingo, não precisa descontar</span>':''}</span>
           </div>`;
         }).join('')
       : `<div class="empty-holidays">Nenhum feriado neste mês.</div>`;
